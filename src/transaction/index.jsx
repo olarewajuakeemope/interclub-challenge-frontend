@@ -1,29 +1,39 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import axios from 'axios';
 import Sidebar from './Sidebar';
 import Dashboard from './Dashboard';
-import fetchTransaction from '../actions/memberActions';
+import actions from '../actions/memberActions';
 
 class Transaction extends Component {
   componentWillMount() {
-    const { dispatch, id } = this.props;
-    axios.get(`http://localhost:4000/api/transactions/${id}`)
-      .then((result) => {
-        dispatch(fetchTransaction(result.data));
-      })
-      .catch(err => console.log(err));
+    const { dispatch, member } = this.props;
+    actions.getTransaction(dispatch, member.id);
   }
 
   render() {
-    const { toggleNav, id } = this.props;
+    const { toggleNav } = this.props;
     return (
       <div className="wrapper">
-        <Dashboard toggleNav={toggleNav} id={id} />
+        <Dashboard
+          toggleNav={toggleNav}
+        />
         <Sidebar />
       </div>
     );
   }
 }
 
-export default connect()(Transaction);
+Transaction.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+  toggleNav: PropTypes.func.isRequired,
+  member: PropTypes.shape().isRequired,
+};
+
+function select(store) {
+  return {
+    member: store.manageTransactions.member,
+  };
+}
+
+export default connect(select)(Transaction);

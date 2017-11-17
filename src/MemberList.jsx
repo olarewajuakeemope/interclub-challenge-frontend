@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
 import axios from 'axios';
 import Transaction from './transaction';
-
 import MemberItem from './MemberItem';
+import actions from './actions/memberActions';
 
 const StyledWrapper = styled.div`
     display: flex;
@@ -13,13 +15,12 @@ const StyledWrapper = styled.div`
     justify-content: space-between;
 `
 
-export default class MemberList extends Component {
+class MemberList extends Component {
   constructor() {
     super();
     this.state = {
       members: [],
       memberSelected: false,
-      memberId: '',
     };
   }
 
@@ -38,28 +39,28 @@ export default class MemberList extends Component {
     this.setState({ memberSelected: !memberSelected });
   }
 
-  handleClick = (id) => {
-    this.setState({ id });
+  handleClick = (member) => {
+    this.setState({ member });
+    this.props.dispatch(actions.currentMember(member));
     this.toggleNav();
   }
 
   render() {
-    const { memberSelected, id } = this.state;
+    const { memberSelected } = this.state;
     if (memberSelected) {
       return (
         <Transaction
-          id={id}
           toggleNav={this.toggleNav}
         />
       );
     }
-    const mappedMembers =  this.state.members.map(member => (
-      <div
-        onClick={() => this.handleClick(member.id)}
+    const mappedMembers = this.state.members.map(member => (
+      <p
+        onClick={() => this.handleClick(member)}
         key={member.id}
       >
         <MemberItem member={member} />
-      </div>
+      </p>
     ));
 
     return (
@@ -69,3 +70,9 @@ export default class MemberList extends Component {
     );
   }
 }
+
+MemberList.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+};
+
+export default connect()(MemberList);

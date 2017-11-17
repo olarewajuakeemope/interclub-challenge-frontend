@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 class Navbar extends Component {
   state = {}
@@ -15,12 +17,12 @@ class Navbar extends Component {
               <span className="icon-bar" />
               <span className="icon-bar" />
             </button>
-            <span onClick={toggleNav}>
+            <p onClick={toggleNav}>
               <a href="#back">
                 <i className="material-icons">keyboard_arrow_left</i>
                 <span>Members</span>
               </a>
-            </span>
+            </p>
           </div>
           <div className="collapse navbar-collapse">
             <ul className="nav navbar-nav navbar-right">
@@ -29,30 +31,6 @@ class Navbar extends Component {
                   <i className="material-icons">dashboard</i>
                   <p className="hidden-lg hidden-md">Dashboard</p>
                 </a>
-              </li>
-              <li className="dropdown">
-                <a href="#" className="dropdown-toggle" data-toggle="dropdown">
-                  <i className="material-icons">notifications</i>
-                  <span className="notification">5</span>
-                  <p className="hidden-lg hidden-md">Notifications</p>
-                </a>
-                <ul className="dropdown-menu">
-                  <li>
-                    <a href="#">Mike John responded to your email</a>
-                  </li>
-                  <li>
-                    <a href="#">You have 5 new tasks</a>
-                  </li>
-                  <li>
-                    <a href="#">You're now friend with Andrew</a>
-                  </li>
-                  <li>
-                    <a href="#">Another Notification</a>
-                  </li>
-                  <li>
-                    <a href="#">Another One</a>
-                  </li>
-                </ul>
               </li>
               <li>
                 <a href="#pablo" className="dropdown-toggle" data-toggle="dropdown">
@@ -68,4 +46,16 @@ class Navbar extends Component {
   }
 }
 
-export default Navbar;
+Navbar.propTypes = {
+  toggleNav: PropTypes.func.isRequired,
+  member: PropTypes.shape({}).isRequired,
+};
+
+function select(store) {
+  const { member } = store.manageTransactions;
+  return {
+    member,
+  };
+}
+
+export default connect(select)(Navbar);

@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import ReactPaginate from 'react-paginate';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 class Sidebar extends Component {
   state = { pageCount: 20 }
@@ -8,9 +10,13 @@ class Sidebar extends Component {
     return (
       <div className="sidebar" data-color="purple" data-image="../assets/img/sidebar-1.jpg">
         <div className="logo">
-          <a href="https://interclub.io" target="_blank" rel="noopener noreferrer" className="text-left">
+          <a
+            href="https://interclub.io"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-left"
+          >
             <img src="/assets/logo_48x48.png" alt="site logo" />
-            <span style={{ paddingLeft: 10 }}>INTERCLUB</span>
           </a>
         </div>
         <div className="sidebar-wrapper">
@@ -33,7 +39,7 @@ class Sidebar extends Component {
             nextLabel={<span><i className="material-icons">keyboard_arrow_right</i></span>}
             breakLabel={<span>...</span>}
             breakClassName={'break-me'}
-            pageCount={this.state.pageCount}
+            pageCount={this.props.count}
             marginPagesDisplayed={2}
             pageRangeDisplayed={5}
             onPageChange={this.handlePageClick}
@@ -47,4 +53,17 @@ class Sidebar extends Component {
   }
 }
 
-export default Sidebar;
+Sidebar.propTypes = {
+  count: PropTypes.number.isRequired,
+  transaction: PropTypes.shape([]).isRequired,
+};
+
+function select(store) {
+  const { count, transactions } = store.manageTransactions.transactions;
+  return {
+    count,
+    transactions,
+  };
+}
+
+export default connect(select)(Sidebar);

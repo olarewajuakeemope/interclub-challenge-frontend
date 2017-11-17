@@ -5,10 +5,13 @@ class Dashboard extends Component {
   state = {}
 
   render() {
-    const { toggleNav, id } = this.props;
+    const { toggleNav, member } = this.props;
     return (
       <div className="main-panel">
-        <Navbar toggleNav={toggleNav} />
+        <Navbar
+          toggleNav={toggleNav}
+          member={member}
+        />
         <div className="content" />
       </div>
     );
