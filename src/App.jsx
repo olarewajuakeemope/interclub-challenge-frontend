@@ -26,7 +26,7 @@ export default class App extends Component {
         return (
             <StyledWrapper>
                 <StyledLogoLink href='https://interclub.io' target='_blank'>
-                    <img src='/assets/inv_logo_48x48.png' />
+                    <img src='/assets/inv_logo_48x48.png' alt='site logo' />
                 </StyledLogoLink>
                 <MemberList />
             </StyledWrapper>
