@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import Navbar from './Navbar';
 import Main from './Main';
+import Footer from './Footer';
 
 class Dashboard extends Component {
   state = {}
@@ -13,9 +15,14 @@ class Dashboard extends Component {
           toggleNav={toggleNav}
         />
         <Main />
+        <Footer />
       </div>
     );
   }
 }
+
+Dashboard.propTypes = {
+  toggleNav: PropTypes.func.isRequired,
+};
 
 export default Dashboard;

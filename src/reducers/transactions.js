@@ -2,8 +2,8 @@ import types from '../actions/types';
 
 const initialState = {
   member: {},
-  transaction: {},
-  transactions: {},
+  transaction: false,
+  transactions: [],
   filter: false,
 };
 

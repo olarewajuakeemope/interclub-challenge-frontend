@@ -11,6 +11,13 @@ class Sidebar extends Component {
     activeTransaction: 0,
   }
 
+  componentWillReceiveProps(nextProps) {
+    const { transactions } = nextProps;
+    if (transactions) {
+      this.handleClick(transactions[0], 0);
+    }
+  }
+
   handlePageClick = (data) => {
     const { dispatch, member, filter } = this.props;
     const selected = data.selected;
@@ -97,8 +104,23 @@ class Sidebar extends Component {
   }
 
   render() {
-    const { count, transactions } = this.props;
+    const { count, transactions, filter } = this.props;
     const transText = count > 1 ? 'Transactions' : 'Transaction';
+    let filterText = null;
+
+    if (filter) {
+      const { type, date } = filter;
+      const typeText = type === 0 ? null :
+        (<span>Type: {type}</span>);
+
+      const dateText = date === 0 ? null :
+        (<span>Date: {date}</span>);
+
+      filterText = (
+        <small><em>Filtered by: </em>{typeText} {dateText}</small>
+      );
+    }
+
     return (
       <div className="sidebar" data-color="purple" data-image="../assets/img/sidebar-1.jpg">
         <div className="logo">
@@ -111,6 +133,7 @@ class Sidebar extends Component {
             <img src="/assets/logo_48x48.png" alt="site logo" />
           </a>
           <span className="ml-20 bg-text font-20 trans-text">{count} {transText}</span>
+          {filterText}
         </div>
         <div className="sidebar-wrapper">
           <ul className="nav">
@@ -124,11 +147,9 @@ class Sidebar extends Component {
 }
 
 Sidebar.propTypes = {
-  count: PropTypes.number.isRequired,
+  count: PropTypes.number,
   member: PropTypes.shape({}).isRequired,
-  filter: PropTypes.shape({}).isRequired,
   dispatch: PropTypes.func.isRequired,
-  transactions: PropTypes.array.isRequired,
 };
 
 function select(store) {

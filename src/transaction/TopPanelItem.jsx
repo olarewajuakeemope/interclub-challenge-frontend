@@ -10,13 +10,12 @@ const TopPanelItem = ({ color, content, title, icon, footerIcon, footerContent }
       <div className="card-content">
         <p className="category">{content}</p>
         <h3 className="title">{title}
-          <small>GB</small>
         </h3>
       </div>
       <div className="card-footer">
         <div className="stats">
-          <i className="material-icons text-danger">{footerIcon}</i>
-          <a href="#pablo">{footerContent}</a>
+          <i className="material-icons">{footerIcon}</i>
+          {footerContent}
         </div>
       </div>
     </div>

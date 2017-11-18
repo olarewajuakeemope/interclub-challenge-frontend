@@ -82,6 +82,7 @@ class Navbar extends Component {
                   <option value={0}>Date Posted</option>
                   <option value="Last Day">Last Day</option>
                   <option value="Last Week">Last Week</option>
+                  <option value="Last 6 Months">Last 6 Months</option>
                   <option value="All Day">All Day</option>
                 </select>
                 <span className="ml-20">
@@ -106,7 +107,6 @@ Navbar.propTypes = {
   toggleNav: PropTypes.func.isRequired,
   member: PropTypes.shape({}).isRequired,
   dispatch: PropTypes.func.isRequired,
-  filter: PropTypes.bool.isRequired,
 };
 
 function select(store) {
