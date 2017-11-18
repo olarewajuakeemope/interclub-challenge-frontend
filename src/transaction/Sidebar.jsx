@@ -19,15 +19,40 @@ class Sidebar extends Component {
   };
 
   handleClick = (transaction, index) => {
+    const { dispatch } = this.props;
     this.setState({
       activeTransaction: index,
     });
+    dispatch(actions.currentTransaction(transaction));
   }
 
-  rendertransactions = () => {
-    const { transactions } = this.props;
+  renderTransactions = () => {
+    const { transactions, count, filter, dispatch, member } = this.props;
+    const clearButton = filter ?
+      (
+        <p className="ml-20">
+          <a
+            href="#/"
+            className="btn btn-primary"
+            onClick={() => actions.getTransaction(dispatch, member.id, 0, false)}
+          >
+           Clear Filter
+          </a>
+        </p>
+      ) :
+      null;
+
+    if (count < 1) {
+      return (
+        <div className="text-center">
+          <h6>No Transactions</h6>
+          {clearButton}
+        </div>
+      );
+    }
+
     return transactions.map((transaction, index) => {
-      const { id, type, amount, date } = transaction;
+      const { id, date } = transaction;
       return (
         <li
           key={id}
@@ -38,12 +63,37 @@ class Sidebar extends Component {
           onClick={() => this.handleClick(transaction, index)}
         >
           <a href="#/">
-            <h4>{type}: <em>${amount}</em></h4>
+            <h4><em>Transaction {id.substring(0, 5)}...</em></h4>
             <p>on: {date.substring(0, 10)}</p>
           </a>
         </li>
       );
     });
+  }
+
+  renderPagination = () => {
+    const { count } = this.props;
+    if (count < 1) {
+      return null;
+    }
+    return (
+      <ReactPaginate
+        previousLabel={<a href=""><i className="material-icons">keyboard_arrow_left</i></a>}
+        nextLabel={<a href=""><i className="material-icons">keyboard_arrow_right</i></a>}
+        breakLabel={<span>...</span>}
+        breakClassName={'break-me'}
+        pageCount={Math.ceil(count / FETCH_LIMIT)}
+        marginPagesDisplayed={2}
+        pageRangeDisplayed={5}
+        onPageChange={this.handlePageClick}
+        previousClassName={'pagination-prev'}
+        nextClassName={'pagination-next'}
+        pageLinkClassName={'pagination-anchor'}
+        containerClassName={'pagination'}
+        subContainerClassName={'pages pagination'}
+        activeClassName={'active'}
+      />
+    );
   }
 
   render() {
@@ -60,28 +110,13 @@ class Sidebar extends Component {
           >
             <img src="/assets/logo_48x48.png" alt="site logo" />
           </a>
-          <span className="ml-20 bg-text font-30 trans-text">{count} {transText}</span>
+          <span className="ml-20 bg-text font-20 trans-text">{count} {transText}</span>
         </div>
         <div className="sidebar-wrapper">
           <ul className="nav">
-            {transactions && this.rendertransactions()}
+            {transactions && this.renderTransactions()}
           </ul>
-          <ReactPaginate
-            previousLabel={<a href=""><i className="material-icons">keyboard_arrow_left</i></a>}
-            nextLabel={<a href=""><i className="material-icons">keyboard_arrow_right</i></a>}
-            breakLabel={<span>...</span>}
-            breakClassName={'break-me'}
-            pageCount={Math.ceil(count / FETCH_LIMIT)}
-            marginPagesDisplayed={2}
-            pageRangeDisplayed={5}
-            onPageChange={this.handlePageClick}
-            previousClassName={'pagination-prev'}
-            nextClassName={'pagination-next'}
-            pageLinkClassName={'pagination-anchor'}
-            containerClassName={'pagination'}
-            subContainerClassName={'pages pagination'}
-            activeClassName={'active'}
-          />
+          {this.renderPagination()}
         </div>
       </div>
     );

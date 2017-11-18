@@ -3,10 +3,19 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import actions from '../actions/memberActions';
 
+const INITIAL_STATE = {
+  type: 0,
+  date: 0,
+};
+
 class Navbar extends Component {
-  state = {
-    type: 0,
-    date: 0,
+  state = INITIAL_STATE;
+
+  componentWillReceiveProps(nextProps) {
+    const { filter } = nextProps;
+    if (typeof filter === 'boolean' && !filter) {
+      this.setState(INITIAL_STATE);
+    }
   }
 
   handleSelect = (event) => {
@@ -21,7 +30,7 @@ class Navbar extends Component {
     const { date, type } = this.state;
     if (date !== 0 || type !== 0) {
       actions.getTransaction(dispatch, member.id, 0, this.state);
-      actions.applyFilter(this.state);
+      dispatch(actions.applyFilter(this.state));
     }
   }
 
@@ -97,12 +106,14 @@ Navbar.propTypes = {
   toggleNav: PropTypes.func.isRequired,
   member: PropTypes.shape({}).isRequired,
   dispatch: PropTypes.func.isRequired,
+  filter: PropTypes.bool.isRequired,
 };
 
 function select(store) {
-  const { member } = store.manageTransactions;
+  const { member, filter } = store.manageTransactions;
   return {
     member,
+    filter,
   };
 }
 

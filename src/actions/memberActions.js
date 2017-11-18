@@ -11,6 +11,12 @@ function applyFilter(filter) {
   };
 }
 
+function clearFilter(filter) {
+  return {
+    type: types.CLEAR_FILTER,
+  };
+}
+
 function fetchTransaction(transactions) {
   return {
     type: types.FETCHED_TRANSACTION,
@@ -25,6 +31,13 @@ function currentMember(member) {
   };
 }
 
+function currentTransaction(transaction) {
+  return {
+    type: types.ACTIVE_TRANSACTION,
+    data: transaction,
+  };
+}
+
 function getTransaction(dispatch, id, offset, filter) {
   const url = `${BASE_URL}/${id}/${offset}`;
   let axiosRequest;
@@ -32,6 +45,7 @@ function getTransaction(dispatch, id, offset, filter) {
     axiosRequest = axios.get(url, { params: filter });
   } else {
     axiosRequest = axios.get(url);
+    dispatch(clearFilter());
   }
   axiosRequest
     .then((result) => {
@@ -45,4 +59,6 @@ export default {
   applyFilter,
   getTransaction,
   currentMember,
+  clearFilter,
+  currentTransaction,
 };

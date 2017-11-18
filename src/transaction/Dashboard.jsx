@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Navbar from './Navbar';
+import Main from './Main';
 
 class Dashboard extends Component {
   state = {}
@@ -11,7 +12,7 @@ class Dashboard extends Component {
         <Navbar
           toggleNav={toggleNav}
         />
-        <div className="content" />
+        <Main />
       </div>
     );
   }
