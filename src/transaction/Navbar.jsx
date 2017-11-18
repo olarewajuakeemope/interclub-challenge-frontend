@@ -5,8 +5,8 @@ import actions from '../actions/memberActions';
 
 class Navbar extends Component {
   state = {
-    selectType: 0,
-    selectDate: 0,
+    type: 0,
+    date: 0,
   }
 
   handleSelect = (event) => {
@@ -18,8 +18,8 @@ class Navbar extends Component {
 
   handleClick = () => {
     const { dispatch, member } = this.props;
-    const { selectDate, selectType } = this.state;
-    if (selectDate !== 0 || selectType !== 0) {
+    const { date, type } = this.state;
+    if (date !== 0 || type !== 0) {
       actions.getTransaction(dispatch, member.id, 0, this.state);
       actions.applyFilter(this.state);
     }
@@ -27,7 +27,7 @@ class Navbar extends Component {
 
   render() {
     const { toggleNav } = this.props;
-    const { selectDate, selectType } = this.state;
+    const { date, type } = this.state;
     return (
       <nav className="navbar navbar-transparent navbar-absolute">
         <div className="container-fluid">
@@ -55,8 +55,8 @@ class Navbar extends Component {
               <div className="form-group  input-lg is-empty">
                 <select
                   className="input-lg ml-20"
-                  name="selectType"
-                  value={selectType}
+                  name="type"
+                  value={type}
                   onChange={this.handleSelect}
                 >
                   <option value={0}>Type</option>
@@ -66,8 +66,8 @@ class Navbar extends Component {
                 </select>
                 <select
                   className="input-lg ml-20"
-                  name="selectDate"
-                  value={selectDate}
+                  name="date"
+                  value={date}
                   onChange={this.handleSelect}
                 >
                   <option value={0}>Date Posted</option>

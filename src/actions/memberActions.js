@@ -26,25 +26,14 @@ function currentMember(member) {
 }
 
 function getTransaction(dispatch, id, offset, filter) {
-  let url = `${BASE_URL}/${id}/${offset}`;
+  const url = `${BASE_URL}/${id}/${offset}`;
+  let axiosRequest;
   if (filter) {
-    let filterString = '';
-    const { selectType, selectDate } = filter;
-    if (selectType !== 0) {
-      filterString = `/${selectType}`;
-    } else {
-      filterString = '/type';
-    }
-    if (selectDate !== 0) {
-      filterString += `/${selectDate}`;
-    } else {
-      filterString += '/date';
-    }
-    url += `${filterString}`;
+    axiosRequest = axios.get(url, { params: filter });
   } else {
-    url += '/type/date';
+    axiosRequest = axios.get(url);
   }
-  axios.get(url)
+  axiosRequest
     .then((result) => {
       dispatch(fetchTransaction(result.data));
     })
