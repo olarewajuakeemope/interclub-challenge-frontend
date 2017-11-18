@@ -1,12 +1,33 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import actions from '../actions/memberActions';
 
 class Navbar extends Component {
-  state = {}
+  state = {
+    selectType: 0,
+    selectDate: 0,
+  }
+
+  handleSelect = (event) => {
+    const { name, value } = event.target;
+    const stateObj = {};
+    stateObj[name] = value;
+    this.setState(stateObj);
+  }
+
+  handleClick = () => {
+    const { dispatch, member } = this.props;
+    const { selectDate, selectType } = this.state;
+    if (selectDate !== 0 || selectType !== 0) {
+      actions.getTransaction(dispatch, member.id, 0, this.state);
+      actions.applyFilter(this.state);
+    }
+  }
 
   render() {
     const { toggleNav } = this.props;
+    const { selectDate, selectType } = this.state;
     return (
       <nav className="navbar navbar-transparent navbar-absolute">
         <div className="container-fluid">
@@ -17,28 +38,54 @@ class Navbar extends Component {
               <span className="icon-bar" />
               <span className="icon-bar" />
             </button>
-            <p onClick={toggleNav}>
+            <h4 onClick={toggleNav}>
               <a href="#back">
-                <i className="material-icons">keyboard_arrow_left</i>
+                <i
+                  className="material-icons font-30"
+                >
+                keyboard_arrow_left
+                </i>
                 <span>Members</span>
               </a>
-            </p>
+            </h4>
           </div>
           <div className="collapse navbar-collapse">
-            <ul className="nav navbar-nav navbar-right">
-              <li>
-                <a href="#pablo" className="dropdown-toggle" data-toggle="dropdown">
-                  <i className="material-icons">dashboard</i>
-                  <p className="hidden-lg hidden-md">Dashboard</p>
-                </a>
-              </li>
-              <li>
-                <a href="#pablo" className="dropdown-toggle" data-toggle="dropdown">
-                  <i className="material-icons">person</i>
-                  <p className="hidden-lg hidden-md">Profile</p>
-                </a>
-              </li>
-            </ul>
+            <form className="navbar-form navbar-right" role="search">
+              <span className="font-30">Filter</span>
+              <div className="form-group  input-lg is-empty">
+                <select
+                  className="input-lg ml-20"
+                  name="selectType"
+                  value={selectType}
+                  onChange={this.handleSelect}
+                >
+                  <option value={0}>Type</option>
+                  <option value="expense">Expense</option>
+                  <option value="income">Income</option>
+                  <option value="all types">All Types</option>
+                </select>
+                <select
+                  className="input-lg ml-20"
+                  name="selectDate"
+                  value={selectDate}
+                  onChange={this.handleSelect}
+                >
+                  <option value={0}>Date Posted</option>
+                  <option value="Last Day">Last Day</option>
+                  <option value="Last Week">Last Week</option>
+                  <option value="All Day">All Day</option>
+                </select>
+                <span className="ml-20">
+                  <a
+                    href="#/"
+                    className="btn btn-primary"
+                    onClick={this.handleClick}
+                  >
+                  Search
+                  </a>
+                </span>
+              </div>
+            </form>
           </div>
         </div>
       </nav>
@@ -49,6 +96,7 @@ class Navbar extends Component {
 Navbar.propTypes = {
   toggleNav: PropTypes.func.isRequired,
   member: PropTypes.shape({}).isRequired,
+  dispatch: PropTypes.func.isRequired,
 };
 
 function select(store) {

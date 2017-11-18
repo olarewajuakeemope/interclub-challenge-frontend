@@ -684,6 +684,47 @@ h2.title {
         width: 260px;
     }
 }
+
+.navbar {
+    background-color: #eeeeee !important;
+    z-index: 0 !important;
+}
+
+.pagination-prev, .pagination-next, .pagination-anchor {
+    outline: 0 !important;
+    cursor: pointer !important;
+}
+
+.pagination-prev a a, .pagination-next a a {
+    cursor: inherit !important;
+}
+
+.trans-text {
+    display: block;
+    position: relative;
+    top: -25px;
+    left: 50px;
+}
+
+.ml-20 {
+    margin-left: 20px;
+}
+
+.pl-20 {
+    padding-left: 20px;
+}
+
+.bg-text {
+    color: rgb(154, 48, 174);
+}
+
+.font-30 {
+    font-size: 30px;
+}
+
+.bg-main {
+    background-color: rgb(154, 48, 174);
+}
 /*============= custom end ================*/
 
 

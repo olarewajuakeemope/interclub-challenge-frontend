@@ -8,7 +8,7 @@ import actions from '../actions/memberActions';
 class Transaction extends Component {
   componentWillMount() {
     const { dispatch, member } = this.props;
-    actions.getTransaction(dispatch, member.id);
+    actions.getTransaction(dispatch, member.id, 0, false);
   }
 
   render() {
