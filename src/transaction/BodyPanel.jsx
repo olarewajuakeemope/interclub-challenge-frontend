@@ -27,13 +27,15 @@ class BodyPanel extends Component {
     if (!transaction) {
       return this.renderNoTrans();
     }
-    const { id, type, amount, date } = this.props.transaction;
+    const { id, type, amount, date } = transaction;
     return (
       <div className="col-lg-6 col-md-12">
         <div className="card">
           <div className="card-header" data-background-color="purple">
             <h4 className="title">Transaction Detail</h4>
-            <p className="category">Selected transaction {id.substring(0, 5)}... Type, Amount and Date</p>
+            <p className="category">
+              Selected transaction {id.substring(0, 5)}... Type, Amount and Date
+            </p>
           </div>
           <div className="card-content table-responsive">
             <table className="table table-hover">

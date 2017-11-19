@@ -17,14 +17,36 @@ const FETCH_LIMIT = 2;
 class Sidebar extends Component {
   state = {
     activeTransaction: 0,
+    filter: {},
+    pagination: null,
+    transRecieved: false,
   }
 
   componentWillReceiveProps(nextProps) {
-    // make first transaction active and dispatch to store
-    const { transactions } = nextProps;
+    const { transactions, filter, count } = nextProps;
+    const { transRecieved } = this.state;
+
+    // Make first transaction active and dispatch to store
     if (transactions) {
       this.handleClick(transactions[0], 0);
     }
+
+    // Create pagination on initial transaction count
+    if (!transRecieved && count > 0) {
+      this.setState({ transRecieved: true });
+      this.renderPagination(count);
+    }
+
+    // Rerender pagination on new filter recieved
+    if (filter && this.compareFilter(filter)) {
+      this.setState({ filter });
+      this.renderPagination();
+    }
+  }
+
+  compareFilter = (newFilter) => {
+    const { filter } = this.state;
+    return (JSON.stringify(newFilter) !== JSON.stringify(filter));
   }
 
   // handle pagination button clicks
@@ -33,6 +55,7 @@ class Sidebar extends Component {
     const selected = data.selected;
     const offset = Math.ceil(selected * FETCH_LIMIT);
     const errType = types.MAIN_FETCH_ERROR;
+
     actions.getTransaction(errType, dispatch, member.id, offset, filter);
   };
 
@@ -47,7 +70,14 @@ class Sidebar extends Component {
 
   // 
   renderTransactions = () => {
-    const { transactions, count, filter, dispatch, member } = this.props;
+    const {
+      transactions,
+      count,
+      filter,
+      dispatch,
+      member
+    } = this.props;
+
     const errType = types.MAIN_FETCH_ERROR;
 
     // Create clear button only if filter is searched
@@ -96,33 +126,54 @@ class Sidebar extends Component {
     });
   }
 
-  renderPagination = () => {
+  renderPagination = async (transCount) => {
     const { count } = this.props;
     if (count < 1) {
       return null;
     }
-    return (
-      <ReactPaginate
-        previousLabel={<a href=""><i className="material-icons">keyboard_arrow_left</i></a>}
-        nextLabel={<a href=""><i className="material-icons">keyboard_arrow_right</i></a>}
-        breakLabel={<span>...</span>}
-        breakClassName={'break-me'}
-        pageCount={Math.ceil(count / FETCH_LIMIT)}
-        marginPagesDisplayed={2}
-        pageRangeDisplayed={5}
-        onPageChange={this.handlePageClick}
-        previousClassName={'pagination-prev'}
-        nextClassName={'pagination-next'}
-        pageLinkClassName={'pagination-anchor'}
-        containerClassName={'pagination'}
-        subContainerClassName={'pages pagination'}
-        activeClassName={'active'}
-      />
-    );
+
+    // Reset state to reset pagination component
+    await this.setState({ pagination: true });
+    this.setState({
+      pagination: (
+        <ReactPaginate
+          breakLabel={<span>...</span>}
+          breakClassName={'break-me'}
+          pageCount={Math.ceil((transCount || count) / FETCH_LIMIT)}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={5}
+          onPageChange={this.handlePageClick}
+          previousClassName={'pagination-prev'}
+          nextClassName={'pagination-next'}
+          pageLinkClassName={'pagination-anchor'}
+          containerClassName={'pagination'}
+          subContainerClassName={'pages pagination'}
+          activeClassName={'active'}
+          previousLabel={
+            <a href="">
+              <i className="material-icons">keyboard_arrow_left</i>
+            </a>
+          }
+          nextLabel={
+            <a href="">
+              <i className="material-icons">keyboard_arrow_right</i>
+            </a>
+          }
+
+        />
+      ),
+    });
   }
 
   render() {
-    const { count, transactions, filter, error } = this.props;
+    const {
+      count,
+      transactions,
+      filter,
+      error
+    } = this.props;
+
+    const { pagination } = this.state;
     let filterText = null;
 
     // Render appropriate singular or plural text
@@ -155,7 +206,7 @@ class Sidebar extends Component {
     }
 
     return (
-      <div className="sidebar" data-color="purple" data-image="../assets/img/sidebar-1.jpg">
+      <div className="sidebar" data-color="purple">
         <div className="logo">
           <a
             href="https://interclub.io"
@@ -172,7 +223,7 @@ class Sidebar extends Component {
           <ul className="nav">
             {errorText || loadingImg || this.renderTransactions()}
           </ul>
-          {transactions && this.renderPagination()}
+          {transactions && pagination}
         </div>
       </div>
     );
