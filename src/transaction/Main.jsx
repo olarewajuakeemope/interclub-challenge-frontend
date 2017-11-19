@@ -130,15 +130,17 @@ class Main extends Component {
           <div className="row">
             <h3>Last 6 Months At Glance</h3>
             <Offline>
-              <div className="alert alert-danger">
-                <div className="container-fluid">
-                  <div className="alert-icon">
-                    <i className="material-icons">error_outline</i>
+              <div className="col-lg-6 col-md-12">
+                <div className="alert alert-danger">
+                  <div className="container-fluid">
+                    <div className="alert-icon">
+                      <i className="material-icons">error_outline</i>
+                    </div>
+                    <button type="button" className="close" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true"><i className="material-icons">clear</i></span>
+                    </button>
+                    <b>Error Alert:</b> Internet Connection Lost
                   </div>
-                  <button type="button" className="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true"><i className="material-icons">clear</i></span>
-                  </button>
-                  <b>Error Alert:</b> Internet Connection Lost
                 </div>
               </div>
             </Offline>
