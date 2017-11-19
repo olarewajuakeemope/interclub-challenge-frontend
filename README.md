@@ -31,7 +31,7 @@ SCREENSHOT           |  DESCRIPTION
     ```` 
     npm start
     ````
-7. Navigate to `http://localhost:3000/#/`
+7. Navigate to `http://localhost:3000`
 
 
 
