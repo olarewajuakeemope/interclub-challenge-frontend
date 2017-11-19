@@ -9,16 +9,24 @@ const INITIAL_STATE = {
   date: 0,
 };
 
+/**
+ * Displays dashboard top menu bar
+ * @export
+ * @class Navbar
+ * @extends {Component}
+ */
 class Navbar extends Component {
   state = INITIAL_STATE;
 
   componentWillReceiveProps(nextProps) {
+    // clear search fields on clear filter
     const { filter } = nextProps;
     if (typeof filter === 'boolean' && !filter) {
       this.setState(INITIAL_STATE);
     }
   }
 
+  // handle search form select input onChange event
   handleSelect = (event) => {
     const { name, value } = event.target;
     const stateObj = {};
@@ -26,11 +34,15 @@ class Navbar extends Component {
     this.setState(stateObj);
   }
 
+  // handle search form onSubmit event
   handleClick = () => {
     const { dispatch, member } = this.props;
     const { date, type } = this.state;
+    const errType = types.MAIN_FETCH_ERROR;
+
+    // Dispatch filter only when options are selected
     if (date !== 0 || type !== 0) {
-      actions.getTransaction(types.MAIN_FETCH_ERROR, dispatch, member.id, 0, this.state);
+      actions.getTransaction(errType, dispatch, member.id, 0, this.state);
       dispatch(actions.applyFilter(this.state));
     }
   }

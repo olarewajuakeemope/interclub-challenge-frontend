@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+/**
+ * Class to display details of selected transaction
+ * @export
+ * @class BodyPanel
+ * @extends {Component}
+ */
 class BodyPanel extends Component {
   renderNoTrans = () => (
     <div className="col-lg-6 col-md-12">

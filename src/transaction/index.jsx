@@ -9,7 +9,10 @@ import types from '../actions/types';
 class Transaction extends Component {
   componentWillMount() {
     const { dispatch, member } = this.props;
-    actions.getTransaction(types.MAIN_FETCH_ERROR, dispatch, member.id, 0, false);
+
+    // Fetch transaction for the selected member
+    const errType = types.MAIN_FETCH_ERROR;
+    actions.getTransaction(errType, dispatch, member.id, 0, false);
   }
 
   render() {

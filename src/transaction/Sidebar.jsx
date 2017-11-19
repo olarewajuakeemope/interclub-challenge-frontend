@@ -7,25 +7,36 @@ import types from '../actions/types';
 
 const FETCH_LIMIT = 2;
 
+/**
+ * Displays fetched transactions (Filtered or not)
+ * in descending order of dates
+ * @export
+ * @class Sidebar
+ * @extends {Component}
+ */
 class Sidebar extends Component {
   state = {
     activeTransaction: 0,
   }
 
   componentWillReceiveProps(nextProps) {
+    // make first transaction active and dispatch to store
     const { transactions } = nextProps;
     if (transactions) {
       this.handleClick(transactions[0], 0);
     }
   }
 
+  // handle pagination button clicks
   handlePageClick = (data) => {
     const { dispatch, member, filter } = this.props;
     const selected = data.selected;
     const offset = Math.ceil(selected * FETCH_LIMIT);
-    actions.getTransaction(types.MAIN_FETCH_ERROR, dispatch, member.id, offset, filter);
+    const errType = types.MAIN_FETCH_ERROR;
+    actions.getTransaction(errType, dispatch, member.id, offset, filter);
   };
 
+  // Dispatch clicked transaction as active to the store
   handleClick = (transaction, index) => {
     const { dispatch } = this.props;
     this.setState({
@@ -34,15 +45,19 @@ class Sidebar extends Component {
     dispatch(actions.currentTransaction(transaction));
   }
 
+  // 
   renderTransactions = () => {
-    const { transactions, count, filter, dispatch, member } = this.props; 
+    const { transactions, count, filter, dispatch, member } = this.props;
+    const errType = types.MAIN_FETCH_ERROR;
+
+    // Create clear button only if filter is searched
     const clearButton = filter ?
       (
         <p className="ml-20">
           <a
             href="#/"
             className="btn btn-primary"
-            onClick={() => actions.getTransaction(types.MAIN_FETCH_ERROR, dispatch, member.id, 0, false)}
+            onClick={() => actions.getTransaction(errType, dispatch, member.id, 0, false)}
           >
            Clear Filter
           </a>
@@ -50,6 +65,7 @@ class Sidebar extends Component {
       ) :
       null;
 
+    // Rendered if fetch returns no transaction
     if (count < 1) {
       return (
         <div className="text-center">
@@ -59,6 +75,7 @@ class Sidebar extends Component {
       );
     }
 
+    // Active class added to clicked transaction for style changing
     return transactions.map((transaction, index) => {
       const { id, date } = transaction;
       return (
@@ -106,24 +123,31 @@ class Sidebar extends Component {
 
   render() {
     const { count, transactions, filter, error } = this.props;
+    let filterText = null;
+
+    // Render appropriate singular or plural text
     const transText = count > 1 ? 'Transactions' : 'Transaction';
+
+    // Rendered if loading or error is true
     const RippleImg = (
       <li className="error-img">
         <img src="/assets/img/ripple.gif" alt="error" />
       </li>
     );
-
     const loadingImg = (error || !transactions) && RippleImg;
-    const errorText = error && (<li>{error}</li>);
-    let filterText = null;
 
+    // prepare error message to inform user
+    const errorText = error && (<li>{error}</li>);
+
+    // prepare filter message to inform user
     if (filter) {
       const { type, date } = filter;
+
       const typeText = type === 0 ? null :
-        (<span>Type: {type}</span>);
+        (<span>Type: {type}</span>); // Render only if By Type filter is selected
 
       const dateText = date === 0 ? null :
-        (<span>Date: {date}</span>);
+        (<span>Date: {date}</span>);// Render only if By Date filter is selected
 
       filterText = (
         <small><em>Filtered by: </em>{typeText} {dateText}</small>

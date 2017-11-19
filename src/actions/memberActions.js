@@ -46,15 +46,19 @@ function handleAxiosError(message, type) {
 }
 
 function getTransaction(errorType, dispatch, id, offset, filter) {
-  dispatch(handleAxiosError(false, errorType));
   const url = `${BASE_URL}/${id}/${offset}`;
   let axiosRequest;
+
+  // clear existing store errors
+  dispatch(handleAxiosError(false, errorType));
+
   if (filter) {
     axiosRequest = axios.get(url, { params: filter });
   } else {
     axiosRequest = axios.get(url);
     dispatch(clearFilter());
   }
+
   axiosRequest
     .then((result) => {
       dispatch(fetchTransaction(result.data));

@@ -17,18 +17,26 @@ const INITIAL_STATE = {
   loading: false,
 };
 
+/**
+ * Displays 6 months summary along
+ * with selected Transaction details
+ * @export
+ * @class Main
+ * @extends {Component}
+ */
 class Main extends Component {
   state = INITIAL_STATE
 
   componentWillMount() {
     const { member } = this.props;
+    this.setState({ loading: true });
+
+    // Fetch 6 months summary panel transactions separate from redux
     const url = `http://localhost:4000/api/transactions/${member.id}/0`;
     const filter = {
       date: 'Last 6 Months',
       noLimit: true,
     };
-
-    this.setState({ loading: true });
     axios.get(url, { params: filter })
       .then((result) => {
         this.setState({
@@ -48,6 +56,7 @@ class Main extends Component {
       });
   }
 
+  // Prepare 6 months transactions summary data
   processTransData = () => {
     const { trans6months } = this.state;
     let expenseTotal = 0;
@@ -106,13 +115,14 @@ class Main extends Component {
     const { member } = this.props;
     const { first_name, last_name } = member;
 
+    // Prepare loading and error defaults
     const RippleImg = (
       <span className="error-img">
         <img src="/assets/img/ripple.gif" alt="error" />
       </span>
     );
-
     const loadingImg = (errorText || loading) && RippleImg;
+
     return (
       <div className="content">
         <div className="container-fluid">
@@ -191,10 +201,9 @@ Main.propTypes = {
 };
 
 function select(store) {
-  const { member, errors } = store.manageTransactions;
+  const { member } = store.manageTransactions;
   return {
     member,
-    error: errors.main,
   };
 }
 
