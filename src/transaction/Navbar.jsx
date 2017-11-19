@@ -43,7 +43,7 @@ class Navbar extends Component {
     // Dispatch filter only when options are selected
     if (date !== 0 || type !== 0) {
       actions.getTransaction(errType, dispatch, member.id, 0, this.state);
-      dispatch(actions.applyFilter(this.state));
+      actions.handleFilter(this.state, dispatch);
     }
   }
 

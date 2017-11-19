@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Offline } from 'react-detect-offline';
-import axios from 'axios';
 import TopPanelItem from './TopPanelItem';
 import BodyPanel from './BodyPanel';
+import actions from '../actions/memberActions';
 
+const NETWORK_ERROR_MESSAGE = 'Request failed with status code 404';
+const NETWORK_ERROR_RESPONSE = 'Check your network connection';
 const INITIAL_STATE = {
   trans6months: [],
   sumTotal: 0,
@@ -33,12 +35,8 @@ class Main extends Component {
     this.setState({ loading: true });
 
     // Fetch 6 months summary panel transactions separate from redux
-    const url = `http://localhost:4000/api/transactions/${member.id}/0`;
-    const filter = {
-      date: 'Last 6 Months',
-      noLimit: true,
-    };
-    axios.get(url, { params: filter })
+    const transactions = actions.get6MonthsTransaction(member);
+    transactions
       .then((result) => {
         this.setState({
           loading: false,
@@ -47,12 +45,12 @@ class Main extends Component {
         this.processTransData();
       })
       .catch((err) => {
-        const errorText = err.message === 'Request failed with status code 404' ?
-          'Check your network connection' :
+        const errorText = err.message === NETWORK_ERROR_MESSAGE ?
+          NETWORK_ERROR_RESPONSE :
           err.message;
         this.setState({
-          errorText,
           loading: false,
+          errorText,
         });
       });
   }

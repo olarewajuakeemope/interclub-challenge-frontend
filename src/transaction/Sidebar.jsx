@@ -42,7 +42,7 @@ class Sidebar extends Component {
     this.setState({
       activeTransaction: index,
     });
-    dispatch(actions.currentTransaction(transaction));
+    actions.setCurrentTransaction(transaction, dispatch);
   }
 
   // 
