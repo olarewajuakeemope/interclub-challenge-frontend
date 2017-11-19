@@ -81,7 +81,7 @@ class Navbar extends Component {
                   value={type}
                   onChange={this.handleSelect}
                 >
-                  <option value={0}>Type</option>
+                  <option disabled value={0}>Type</option>
                   <option value="expense">Expense</option>
                   <option value="income">Income</option>
                   <option value="all types">All Types</option>
@@ -92,7 +92,7 @@ class Navbar extends Component {
                   value={date}
                   onChange={this.handleSelect}
                 >
-                  <option value={0}>Date Posted</option>
+                  <option disabled value={0}>Date Posted</option>
                   <option value="Last Day">Last Day</option>
                   <option value="Last Week">Last Week</option>
                   <option value="Last 6 Months">Last 6 Months</option>
