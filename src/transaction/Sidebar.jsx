@@ -20,9 +20,10 @@ class Sidebar extends Component {
     filter: {},
     pagination: null,
     transRecieved: false,
+    count: null,
   }
 
-  componentWillReceiveProps(nextProps) {
+  async componentWillReceiveProps(nextProps) {
     const { transactions, filter, count } = nextProps;
     const { transRecieved } = this.state;
 
@@ -33,14 +34,16 @@ class Sidebar extends Component {
 
     // Create pagination on initial transaction count
     if (!transRecieved && count > 0) {
-      this.setState({ transRecieved: true });
+      await this.setState({ transRecieved: true, count });
       this.renderPagination(count);
     }
 
     // Rerender pagination on new filter recieved
-    if (filter && this.compareFilter(filter)) {
-      this.setState({ filter });
-      this.renderPagination();
+    if (count !== this.state.count) {
+      if (this.compareFilter(filter)) {
+        await this.setState({ filter, count });
+        this.renderPagination(count);
+      }
     }
   }
 
@@ -126,43 +129,42 @@ class Sidebar extends Component {
     });
   }
 
-  renderPagination = async (transCount) => {
-    const { count } = this.props;
-    if (count < 1) {
-      return null;
-    }
-
+  renderPagination = async (count) => {
+    if (!count || count < 1) {
+      await this.setState({ pagination: null });
+    } else {
     // Reset state to reset pagination component
-    await this.setState({ pagination: true });
-    this.setState({
-      pagination: (
-        <ReactPaginate
-          breakLabel={<span>...</span>}
-          breakClassName={'break-me'}
-          pageCount={Math.ceil((transCount || count) / FETCH_LIMIT)}
-          marginPagesDisplayed={2}
-          pageRangeDisplayed={5}
-          onPageChange={this.handlePageClick}
-          previousClassName={'pagination-prev'}
-          nextClassName={'pagination-next'}
-          pageLinkClassName={'pagination-anchor'}
-          containerClassName={'pagination'}
-          subContainerClassName={'pages pagination'}
-          activeClassName={'active'}
-          previousLabel={
-            <a href="">
-              <i className="material-icons">keyboard_arrow_left</i>
-            </a>
-          }
-          nextLabel={
-            <a href="">
-              <i className="material-icons">keyboard_arrow_right</i>
-            </a>
-          }
+      await this.setState({ pagination: true });
+      await this.setState({
+        pagination: (
+          <ReactPaginate
+            breakLabel={<span>...</span>}
+            breakClassName={'break-me'}
+            pageCount={Math.ceil(count / FETCH_LIMIT)}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={5}
+            onPageChange={this.handlePageClick}
+            previousClassName={'pagination-prev'}
+            nextClassName={'pagination-next'}
+            pageLinkClassName={'pagination-anchor'}
+            containerClassName={'pagination'}
+            subContainerClassName={'pages pagination'}
+            activeClassName={'active'}
+            previousLabel={
+              <a href="">
+                <i className="material-icons">keyboard_arrow_left</i>
+              </a>
+            }
+            nextLabel={
+              <a href="">
+                <i className="material-icons">keyboard_arrow_right</i>
+              </a>
+            }
 
-        />
-      ),
-    });
+          />
+        ),
+      });
+    }
   }
 
   render() {
