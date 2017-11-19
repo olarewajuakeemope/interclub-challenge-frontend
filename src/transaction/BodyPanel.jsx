@@ -27,7 +27,7 @@ class BodyPanel extends Component {
         <div className="card">
           <div className="card-header" data-background-color="purple">
             <h4 className="title">Transaction Detail</h4>
-            <p className="category">Transaction {id.substring(0, 5)}... Type, Amount and Date</p>
+            <p className="category">Selected transaction {id.substring(0, 5)}... Type, Amount and Date</p>
           </div>
           <div className="card-content table-responsive">
             <table className="table table-hover">

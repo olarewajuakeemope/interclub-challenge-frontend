@@ -13,6 +13,8 @@ const INITIAL_STATE = {
   expenseCount: 0,
   incomeCount: 0,
   totalCount: 0,
+  errorText: false,
+  loading: false,
 };
 
 class Main extends Component {
@@ -26,12 +28,24 @@ class Main extends Component {
       noLimit: true,
     };
 
+    this.setState({ loading: true });
     axios.get(url, { params: filter })
       .then((result) => {
-        this.setState({ trans6months: result.data.transactions });
+        this.setState({
+          loading: false,
+          trans6months: result.data.transactions,
+        });
         this.processTransData();
       })
-      .catch(err => console.log(err.message));
+      .catch((err) => {
+        const errorText = err.message === 'Request failed with status code 404' ?
+          'Check your network connection' :
+          err.message;
+        this.setState({
+          errorText,
+          loading: false,
+        });
+      });
   }
 
   processTransData = () => {
@@ -86,8 +100,19 @@ class Main extends Component {
       expenseCount,
       incomeCount,
       totalCount,
+      errorText,
+      loading,
     } = this.state;
-    const { first_name, last_name } = this.props.member;
+    const { member } = this.props;
+    const { first_name, last_name } = member;
+
+    const RippleImg = (
+      <span className="error-img">
+        <img src="/assets/img/ripple.gif" alt="error" />
+      </span>
+    );
+
+    const loadingImg = (errorText || loading) && RippleImg;
     return (
       <div className="content">
         <div className="container-fluid">
@@ -99,33 +124,33 @@ class Main extends Component {
               color="orange"
               icon="person"
               content="Member"
-              title={first_name}
               footerIcon="person"
-              footerContent={`${first_name} ${last_name}`}
+              title={loadingImg || first_name}
+              footerContent={loadingImg || `${first_name} ${last_name}`}
             />
             <TopPanelItem
               color="green"
               icon="list"
               content="All Transactions"
-              title={`$${sumTotal}`}
               footerIcon="sort"
-              footerContent={`${totalCount} in 6 months`}
+              title={loadingImg || `$${sumTotal}`}
+              footerContent={loadingImg || `${totalCount} in 6 months`}
             />
             <TopPanelItem
               color="blue"
               icon="receipt"
               content="Expense Type"
-              title={`$${expenseTotal}`}
+              title={loadingImg || `$${expenseTotal}`}
               footerIcon="sort"
-              footerContent={`${expenseCount} in 6 months`}
+              footerContent={loadingImg || `${expenseCount} in 6 months`}
             />
             <TopPanelItem
               color="red"
               icon="credit_card"
               content="Income Type"
-              title={`$${incomeTotal}`}
+              title={loadingImg || `$${incomeTotal}`}
               footerIcon="sort"
-              footerContent={`${incomeCount} in 6 months`}
+              footerContent={loadingImg || `${incomeCount} in 6 months`}
             />
           </div>
           <div className="row">
@@ -148,7 +173,7 @@ class Main extends Component {
                       <th>Date(Time)</th>
                     </thead>
                     <tbody>
-                      {this.renderTableRows()}
+                      {errorText || loadingImg || this.renderTableRows()}
                     </tbody>
                   </table>
                 </div>
@@ -166,9 +191,10 @@ Main.propTypes = {
 };
 
 function select(store) {
-  const { member } = store.manageTransactions;
+  const { member, errors } = store.manageTransactions;
   return {
     member,
+    error: errors.main,
   };
 }
 

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import actions from '../actions/memberActions';
+import types from '../actions/types';
 
 const INITIAL_STATE = {
   type: 0,
@@ -29,7 +30,7 @@ class Navbar extends Component {
     const { dispatch, member } = this.props;
     const { date, type } = this.state;
     if (date !== 0 || type !== 0) {
-      actions.getTransaction(dispatch, member.id, 0, this.state);
+      actions.getTransaction(types.MAIN_FETCH_ERROR, dispatch, member.id, 0, this.state);
       dispatch(actions.applyFilter(this.state));
     }
   }

@@ -13,7 +13,14 @@ const StyledWrapper = styled.div`
     width: 100%;
     padding: 50px calc((100vw - 860px) / 2);
     justify-content: space-between;
-`
+`;
+
+const styles = {
+  error: {
+    color: 'white',
+    textAlign: 'center',
+  },
+};
 
 class MemberList extends Component {
   constructor() {
@@ -21,6 +28,7 @@ class MemberList extends Component {
     this.state = {
       members: [],
       memberSelected: false,
+      error: false,
     };
   }
 
@@ -30,15 +38,19 @@ class MemberList extends Component {
       const members = res.data;
       this.setState({ members });
     } catch (err) {
-      console.error(err);
+      this.setState({
+        error: err.message,
+      });
     }
   }
 
+  // toggles between the members list page and member dashboard
   toggleNav = () => {
     const { memberSelected } = this.state;
     this.setState({ memberSelected: !memberSelected });
   }
 
+  // dispatch user selected member and toggle page
   handleClick = (member) => {
     this.setState({ member });
     this.props.dispatch(actions.currentMember(member));
@@ -46,7 +58,18 @@ class MemberList extends Component {
   }
 
   render() {
-    const { memberSelected } = this.state;
+    const { memberSelected, error } = this.state;
+
+    // alert user on axios request error
+    if (error) {
+      return (
+        <StyledWrapper>
+          <h2 style={styles.error}>{error}</h2>
+        </StyledWrapper>
+      );
+    }
+
+    // leave members list page when a member is selected
     if (memberSelected) {
       return (
         <Transaction
@@ -54,6 +77,8 @@ class MemberList extends Component {
         />
       );
     }
+
+    // create content for members list page
     const mappedMembers = this.state.members.map(member => (
       <p
         onClick={() => this.handleClick(member)}

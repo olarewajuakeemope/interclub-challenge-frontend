@@ -4,11 +4,12 @@ import { connect } from 'react-redux';
 import Sidebar from './Sidebar';
 import Dashboard from './Dashboard';
 import actions from '../actions/memberActions';
+import types from '../actions/types';
 
 class Transaction extends Component {
   componentWillMount() {
     const { dispatch, member } = this.props;
-    actions.getTransaction(dispatch, member.id, 0, false);
+    actions.getTransaction(types.MAIN_FETCH_ERROR, dispatch, member.id, 0, false);
   }
 
   render() {

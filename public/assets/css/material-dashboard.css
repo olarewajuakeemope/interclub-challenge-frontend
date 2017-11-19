@@ -707,6 +707,19 @@ h2.title {
     width: 150px;
 }
 
+.error {
+    margin-top: 50%;
+    margin-bottom: auto;
+    z-index: 5;
+    background-color: white;
+}
+
+.error-img {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+}
+
 .ml-20 {
     margin-left: 20px;
 }

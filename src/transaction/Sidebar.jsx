@@ -3,6 +3,7 @@ import ReactPaginate from 'react-paginate';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import actions from '../actions/memberActions';
+import types from '../actions/types';
 
 const FETCH_LIMIT = 2;
 
@@ -22,7 +23,7 @@ class Sidebar extends Component {
     const { dispatch, member, filter } = this.props;
     const selected = data.selected;
     const offset = Math.ceil(selected * FETCH_LIMIT);
-    actions.getTransaction(dispatch, member.id, offset, filter);
+    actions.getTransaction(types.MAIN_FETCH_ERROR, dispatch, member.id, offset, filter);
   };
 
   handleClick = (transaction, index) => {
@@ -34,14 +35,14 @@ class Sidebar extends Component {
   }
 
   renderTransactions = () => {
-    const { transactions, count, filter, dispatch, member } = this.props;
+    const { transactions, count, filter, dispatch, member } = this.props; 
     const clearButton = filter ?
       (
         <p className="ml-20">
           <a
             href="#/"
             className="btn btn-primary"
-            onClick={() => actions.getTransaction(dispatch, member.id, 0, false)}
+            onClick={() => actions.getTransaction(types.MAIN_FETCH_ERROR, dispatch, member.id, 0, false)}
           >
            Clear Filter
           </a>
@@ -104,8 +105,16 @@ class Sidebar extends Component {
   }
 
   render() {
-    const { count, transactions, filter } = this.props;
+    const { count, transactions, filter, error } = this.props;
     const transText = count > 1 ? 'Transactions' : 'Transaction';
+    const RippleImg = (
+      <li className="error-img">
+        <img src="/assets/img/ripple.gif" alt="error" />
+      </li>
+    );
+
+    const loadingImg = (error || !transactions) && RippleImg;
+    const errorText = error && (<li>{error}</li>);
     let filterText = null;
 
     if (filter) {
@@ -137,9 +146,9 @@ class Sidebar extends Component {
         </div>
         <div className="sidebar-wrapper">
           <ul className="nav">
-            {transactions && this.renderTransactions()}
+            {errorText || loadingImg || this.renderTransactions()}
           </ul>
-          {this.renderPagination()}
+          {transactions && this.renderPagination()}
         </div>
       </div>
     );
@@ -153,13 +162,14 @@ Sidebar.propTypes = {
 };
 
 function select(store) {
-  const { member, filter } = store.manageTransactions;
+  const { member, filter, errors } = store.manageTransactions;
   const { count, transactions } = store.manageTransactions.transactions;
   return {
     count,
     transactions,
     member,
     filter,
+    error: errors.main,
   };
 }
 

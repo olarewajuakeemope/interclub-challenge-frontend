@@ -11,7 +11,7 @@ function applyFilter(filter) {
   };
 }
 
-function clearFilter(filter) {
+function clearFilter() {
   return {
     type: types.CLEAR_FILTER,
   };
@@ -38,7 +38,15 @@ function currentTransaction(transaction) {
   };
 }
 
-function getTransaction(dispatch, id, offset, filter) {
+function handleAxiosError(message, type) {
+  return {
+    type,
+    data: message,
+  };
+}
+
+function getTransaction(errorType, dispatch, id, offset, filter) {
+  dispatch(handleAxiosError(false, errorType));
   const url = `${BASE_URL}/${id}/${offset}`;
   let axiosRequest;
   if (filter) {
@@ -51,7 +59,12 @@ function getTransaction(dispatch, id, offset, filter) {
     .then((result) => {
       dispatch(fetchTransaction(result.data));
     })
-    .catch(err => console.log(err));
+    .catch((err) => {
+      const errorText = err.message === 'Request failed with status code 404' ?
+        'Check your network connection' :
+        err.message;
+      dispatch(handleAxiosError(errorText, errorType));
+    });
 }
 
 export default {

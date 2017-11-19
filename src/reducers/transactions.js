@@ -5,6 +5,7 @@ const initialState = {
   transaction: false,
   transactions: [],
   filter: false,
+  errors: {},
 };
 
 function transactions(state = initialState, action) {
@@ -22,6 +23,11 @@ function transactions(state = initialState, action) {
   }
   if (action.type === types.CLEAR_FILTER) {
     return { ...state, filter: false };
+  }
+
+  // handle errors
+  if (action.type === types.MAIN_FETCH_ERROR) {
+    return { ...state, errors: { ...state.errors, main: action.data } };
   }
   return state;
 }
