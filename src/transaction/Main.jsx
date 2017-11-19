@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Offline } from 'react-detect-offline';
 import axios from 'axios';
 import TopPanelItem from './TopPanelItem';
 import BodyPanel from './BodyPanel';
@@ -128,6 +129,19 @@ class Main extends Component {
         <div className="container-fluid">
           <div className="row">
             <h3>Last 6 Months At Glance</h3>
+            <Offline>
+              <div className="alert alert-danger">
+                <div className="container-fluid">
+                  <div className="alert-icon">
+                    <i className="material-icons">error_outline</i>
+                  </div>
+                  <button type="button" className="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true"><i className="material-icons">clear</i></span>
+                  </button>
+                  <b>Error Alert:</b> Internet Connection Lost
+                </div>
+              </div>
+            </Offline>
           </div>
           <div className="row">
             <TopPanelItem
