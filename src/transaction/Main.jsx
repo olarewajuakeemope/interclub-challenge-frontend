@@ -157,14 +157,14 @@ class Main extends Component {
               icon="list"
               content="All Transactions"
               footerIcon="sort"
-              title={loadingImg || `$${sumTotal}`}
+              title={loadingImg || `$${sumTotal.toFixed(2)}`}
               footerContent={loadingImg || `${totalCount} in 6 months`}
             />
             <TopPanelItem
               color="blue"
               icon="receipt"
               content="Expense Type"
-              title={loadingImg || `$${expenseTotal}`}
+              title={loadingImg || `$${expenseTotal.toFixed(2)}`}
               footerIcon="sort"
               footerContent={loadingImg || `${expenseCount} in 6 months`}
             />
@@ -172,7 +172,7 @@ class Main extends Component {
               color="red"
               icon="credit_card"
               content="Income Type"
-              title={loadingImg || `$${incomeTotal}`}
+              title={loadingImg || `$${incomeTotal.toFixed(2)}`}
               footerIcon="sort"
               footerContent={loadingImg || `${incomeCount} in 6 months`}
             />
